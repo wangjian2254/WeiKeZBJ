@@ -2,6 +2,10 @@
         font-size: 12px;
 
     }
+a{
+	text-decoration:none;
+    font-size: 14px;
+}
     input[type="text"]
     {
         background:url(/images/input_bg.gif) repeat-x top left;
@@ -18,6 +22,7 @@
     }
     td{
         text-align: center;
+        padding: 3px;
     }
     .bodydiv{
         margin: auto;

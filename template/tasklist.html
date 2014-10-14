@@ -19,11 +19,11 @@
             <td width="100">参与</td>
             <td width="100">状态</td>
         </tr>
-        {% for subject in subjects%}
+        {% for subject in tasklist%}
         <tr>
             <td>{{loop.index}}</td>
             <td class="tdvalue">
-                <a href="{{url}}">{{subject.title}}</a>
+                <a href="{{subject.url}}" target="_blank">{{subject.title}}</a>
                 <p style="font-size: 9px;color: #b5b5b5">
                     {{subject.desc}}
                 </p>
