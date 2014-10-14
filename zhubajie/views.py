@@ -127,7 +127,7 @@ class TaskList(Page):
         subject = Subject.get_by_id(int(subjectid))
         page = int(self.request.get('page', '0'))
 
-        l = Task.all().filter('subject =', int(subjectid)).fetch(100, page)
+        l = Task.all().filter('subject =', int(subjectid)).order('-create_time').fetch(100, page)
         self.render('template/tasklist.html', {'tasklist': l, 'subject': subject})
 
 
