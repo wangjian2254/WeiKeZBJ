@@ -50,31 +50,31 @@ def getOnePage(html):
                     if cssClass and cssClass[0]=='list-task-reward':
                         #金额
                         taskItem['reward']=i.get_text()
-                        print i.get_text()
+                        # print i.get_text()
                     if cssClass and cssClass[0]=='list-task-title':
                         #标题
                         taskItem['title']=i.get_text()
                         taskItem['href']=i.get('href')
-                        print i.get_text()
-                        print taskItem['href']
+                        # print i.get_text()
+                        # print taskItem['href']
                     if cssClass and cssClass[0]=='list-task-ctn':
                         #摘要
                         taskItem['summary']=i.get_text()
-                        print i.get_text()
+                        # print i.get_text()
                     if cssClass and cssClass[0]=='list-task-trusteeship':
                         #状态
                         taskItem['state']=i.get_text()
-                        print i.get_text()
+                        # print i.get_text()
 
                 tds=row.find_all('td')
 
                 #参与
                 taskItem['participation']= tds[2].get_text()
-                print tds[2].get_text()
+                # print tds[2].get_text()
 
                 #剩余时间
                 taskItem['time_remaining']= tds[3].get_text()
-                print tds[3].get_text()
+                # print tds[3].get_text()
 
 
                 taskList.append(taskItem)
@@ -85,4 +85,4 @@ def main():
 
     print getTaskList('微信')
 
-main()
+# main()

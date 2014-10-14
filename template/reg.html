@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>注册-猪八戒监听</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+</head>
+
+<body>
+<div class="bodydiv" style="width: 700px;">
+    <form action="/regUser" method="post">
+    <table class="tablefrom" cellpadding="0" cellspacing="1">
+        <tr>
+            <td colspan="2" align="center"><h5>注册用户</h5></td>
+        </tr>
+        <tr>
+            <td class="tdlable">用户名:</td>
+            <td class="tdvalue"><input type="text" name="username" value="{{person.username}}" ><label>5~12字符，英文、数字</label></td>
+        </tr>
+        <tr>
+            <td class="tdlable">密码:</td>
+            <td class="tdvalue"><input type="password" name="password" value="{{person.password}}" ><label>5~12字符，英文、数字</label></td>
+        </tr>
+        <tr>
+            <td class="tdlable">邮件:</td>
+            <td class="tdvalue"><input type="text" name="email" value="{{person.email}}" ><label>通知邮箱，必须是gmail</label></td>
+        </tr>
+        <tr>
+            <td class="tdlable">通知开始时间:</td>
+            <td class="tdvalue"><input type="text" name="start_time" value="{{person.start_time}}" ><label>时间：9、09:30、09（必须是小于24的数字）</label></td>
+        </tr>
+        <tr>
+            <td class="tdlable">通知结束时间:</td>
+            <td class="tdvalue"><input type="text" name="end_time" value="{{person.end_time}}" ><label>时间：9、09:30、09（必须是小于24的数字,切晚于开始时间）</label></td>
+        </tr>
+        <tr>
+            <td class="tdlable">通知最小间隔:</td>
+            <td class="tdvalue"><input type="text" name="space" value="{{person.space}}" ><label>分钟</label></td>
+        </tr>
+        {% if person.has_key('error') %}
+        <tr>
+            <td colspan="2" align="center">
+                <span style="color: red;">{{person.error}}</span>
+            </td>
+        </tr>
+        {%endif%}
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="注册">&nbsp;&nbsp;&nbsp;
+                <a href="/regUser">登录</a>
+            </td>
+        </tr>
+    </table>
+        </form>
+</div>
+</body>
+</html>

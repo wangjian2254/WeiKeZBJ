@@ -1,0 +1,47 @@
+*{
+        font-size: 12px;
+
+    }
+    input[type="text"]
+    {
+        background:url(/images/input_bg.gif) repeat-x top left;
+        height:24px;
+        line-height:24px;
+        border:1px solid #b5b5b5;
+    }
+    input[type="password"]
+    {
+        background:url(/images/input_bg.gif) repeat-x top left;
+        height:24px;
+        line-height:24px;
+        border:1px solid #b5b5b5;
+    }
+    td{
+        text-align: center;
+    }
+    .bodydiv{
+        margin: auto;
+
+        height: 400px;
+    }
+    .tablefrom{
+        width: 100%;
+        background-color: #99eea6;
+    }
+    .tablefrom td{
+        background-color: #ffffff;
+
+        height: 25px;
+    }
+
+    .tablefrom label{
+        margin-left: 10px;
+        font-size: 9px;
+    }
+    .tdlable{
+        width: 120px;
+        text-align: right;
+    }
+    .tdvalue{
+        text-align: left;
+    }

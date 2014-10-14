@@ -15,11 +15,18 @@
 # limitations under the License.
 #
 import webapp2
+from zhubajie.views import RegUser, Login, Logout, SubjectList, SubjectAdd, TaskList, SubjectDel, TaskSearch
 
-class MainHandler(webapp2.RequestHandler):
-    def get(self):
-        self.response.write('Hello world!')
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', Login),
+    ('/login', Login),
+    ('/logout', Logout),
+    ('/regUser', RegUser),
+    # ('/top', Top),
+    ('/tasklist', TaskList),
+    ('/tasksearch', TaskSearch),
+    ('/subjectlist', SubjectList),
+    ('/subjectadd', SubjectAdd),
+    ('/deleteSubject', SubjectDel),
 ], debug=True)

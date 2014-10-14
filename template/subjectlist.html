@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>监听-猪八戒监听</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+</head>
+
+<body>
+<div class="bodydiv" style="width: 700px">
+    <form action="/subjectadd" method="post">
+    <table class="tablefrom" cellpadding="0" cellspacing="1">
+        <tr>
+            <td colspan="2" align="center"><h5>添加监听关键字</h5></td>
+        </tr>
+        <tr>
+            <td class="tdlable">关键字:</td>
+            <td class="tdvalue"><input type="text" name="title"  ><label style="color: red">*</label></td>
+        </tr>
+        <tr>
+            <td class="tdlable">最低金额:</td>
+            <td class="tdvalue"><input type="text" name="price"  ></td>
+        </tr>
+
+        {% if error %}
+        <tr>
+            <td colspan="2" align="center">
+                <span style="color: red;">{{error}}</span>
+            </td>
+        </tr>
+        {%endif%}
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="保存">
+            </td>
+        </tr>
+    </table>
+        </form>
+    <table class="tablefrom" cellpadding="0" cellspacing="1">
+        <tr>
+            <td width="30">序号</td>
+            <td>关键字</td>
+            <td width="100">最低金额</td>
+            <td width="100">操作</td>
+        </tr>
+        {% for subject in subjects%}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td class="tdvalue"><a href="/tasklist?subjectid={{subject.key().id()}}">{{subject.title}}</a></td>
+            <td>{{subject.price}}元</td>
+            <td><a href="/deleteSubject?subjectid={{subject.key().id()}}"><img src="/images/del.gif" border="0" /></a> </td>
+        </tr>
+        {%endfor%}
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>任务-猪八戒监听</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+</head>
+
+<body>
+<div class="bodydiv" style="width: 900px">
+    <table class="tablefrom" cellpadding="0" cellspacing="1">
+        <tr>
+            <td colspan="5">关键字：<span style="color: red">{{subject.title}}</span>&nbsp;&nbsp;&nbsp;价格：<span style="color: red">{{subject.price}}</span></td>
+        </tr>
+        <tr>
+            <td width="30">序号</td>
+            <td>任务标题</td>
+            <td width="100">任务金额</td>
+            <td width="100">参与</td>
+            <td width="100">状态</td>
+        </tr>
+        {% for subject in subjects%}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td class="tdvalue">
+                <a href="{{url}}">{{subject.title}}</a>
+                <p style="font-size: 9px;color: #b5b5b5">
+                    {{subject.desc}}
+                </p>
+            </td>
+            <td>{{subject.reward}}元</td>
+            <td>{{subject.participation}}</td>
+            <td>{{subject.state}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+</div>
+</body>
+</html>

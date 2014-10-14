@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>登录-猪八戒监听</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+</head>
+
+<body>
+<div class="bodydiv" style="width: 350px">
+    <form action="/login" method="post">
+    <table class="tablefrom" cellpadding="0" cellspacing="1">
+        <tr>
+            <td colspan="2" align="center"><h5>登录</h5></td>
+        </tr>
+        <tr>
+            <td class="tdlable">用户名:</td>
+            <td class="tdvalue"><input type="text" name="username"  ></td>
+        </tr>
+        <tr>
+            <td class="tdlable">密码:</td>
+            <td class="tdvalue"><input type="password" name="password"  ></td>
+        </tr>
+
+        {% if person and person.has_key('error') %}
+        <tr>
+            <td colspan="2" align="center">
+                <span style="color: red;">{{person.error}}</span>
+            </td>
+        </tr>
+        {%endif%}
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="登录">&nbsp;&nbsp;&nbsp;
+                <a href="/regUser">注册</a>
+            </td>
+        </tr>
+    </table>
+        </form>
+</div>
+</body>
+</html>
