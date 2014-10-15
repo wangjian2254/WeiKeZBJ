@@ -14,6 +14,12 @@ loginurl = '/login'
 
 
 class Page(webapp2.RequestHandler):
+
+    def render_html(self, template_file, template_value):
+        jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
+        template = jinja_environment.get_template(template_file)
+        return template.render(template_value)
+
     def render(self, template_file, template_value):
         jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
         template = jinja_environment.get_template(template_file)

@@ -131,12 +131,29 @@ class TaskList(Page):
         self.render('template/tasklist.html', {'tasklist': l, 'subject': subject})
 
 
+class TaskMail(Page):
+    def get(self):
+        nowtime = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+        for person in Person.all():
+            if person.last_notice_time and (person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
+                continue
+            if person.email:
+                for subject in Subject.all().filter('person =', person.key().id()):
+                    query = Task.all().filter('subject =', subject.key().id())
+                    if person.last_notice_time:
+                        query = query.filter('create_time >=', person.last_notice_time)
+                    for task in query:
+                        pass
+            person.last_notice_time = nowtime
+            person.put()
+
+
 class TaskSearch(Page):
     def get(self):
-        url = 'http://search.zhubajie.com/t/s5.html?'
+        url = 'http://search.zhubajie.com/t/s5t5.html?'
         keywords = []
         for subject in Subject.all():
-            parms = {'kw': subject.title.encode('utf-8')}
+            parms = {'kw': subject.title.encode('utf-8'), 'j': subject.price}
             keywords.append((urllib.urlencode(parms), subject.key().id(), subject.person))
         self.searchTask(url, keywords)
 
