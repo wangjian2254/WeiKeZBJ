@@ -15,24 +15,28 @@ def getTaskList(keyword):
     parms={
         'kw':keyword
     }
-    url='http://search.zhubajie.com/t/s5.html?'+urllib.urlencode(parms)
-    taskList=[]
-    while url:
-        html=getHtml(url)
-        url=None
-        #获取下一页链接
-        taskList.append(getOnePage(html))
-        soup = BeautifulSoup(html)
-        links=soup.find_all('a')
-        for i in links:
-            if i.get_text() == u"»":
-                url=i.get('href').encode('utf8')
-                break
+    url='http://search.zhubajie.com/t/s5t5.html?'+urllib.urlencode(parms)
+    # taskList=[]
+    # while url:
+    #     html=getHtml(url)
+    #     url=None
+    #     #获取下一页链接
+    #     taskList.append(getOnePage(html))
+    #     soup = BeautifulSoup(html)
+    #     links=soup.find_all('a')
+    #     for i in links:
+    #         if i.get_text() == u"»":
+    #             url=i.get('href').encode('utf8')
+    #             break
+    html=getHtml(url)
+    return getOnePage(html)
 
 
 
 
 def getOnePage(html):
+    if html.find('以下为系统推荐需求') != -1:
+        return []
     soup = BeautifulSoup(html)
     tables=soup.find_all('table')
     count = len(tables)
@@ -82,7 +86,8 @@ def getOnePage(html):
 
 
 def main():
-
     print getTaskList('微信')
+    print getTaskList('sdfaf')
 
-# main()
+if __name__ == '__main__':
+    main()
