@@ -8,6 +8,7 @@ from google.appengine.api import urlfetch
 from tools.page import Page, setLogout, setLogin, login_required, get_current_user
 from zhubajie.bajie import getOnePage
 from zhubajie.models import Person, Subject, Task
+from google.appengine.api import memcache
 
 __author__ = u'王健'
 
@@ -104,6 +105,8 @@ class SubjectAdd(Page):
             except:
                 subject.price = 0
             subject.save()
+            memcache.delete('subjectlist%s' % person.key().id())
+            memcache.delete('allsubjectparm')
         self.redirect('/subjectlist')
 
 
@@ -117,6 +120,8 @@ class SubjectDel(Page):
             subject = Subject.get_by_id(int(subjectid))
             if subject.person == person.key().id():
                 subject.delete()
+                memcache.delete('allsubjectparm')
+                memcache.delete('subjectlist%s' % person.key().id())
         self.redirect('/subjectlist')
 
 
@@ -158,13 +163,24 @@ class EmailHtml(Page):
 class TaskMail(Page):
     def get(self):
         nowtime = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
-        for person in Person.all():
+        personidlist = memcache.get('allperson')
+        if not personidlist:
+            personidlist = [p.key().id() for p in Person.all()]
+        for personid in personidlist:
+            person = memcache.get('personid%s' % personid)
+            if not person:
+                person = Person.get_by_id(personid)
+                memcache.set('personid%s' % personid, person, 3600)
             subjects = []
             allsubjects = []
             if person.last_notice_time and (person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
                 continue
             if person.email:
-                for subject in Subject.all().filter('person =', person.key().id()):
+                usersubjectlist = memcache.get('subjectlist%s' % personid)
+                if not usersubjectlist:
+                    usersubjectlist = [subject for subject in Subject.all().filter('person =', person.key().id())]
+                    memcache.set('subjectlist%s' % personid, usersubjectlist, 3600)
+                for subject in usersubjectlist:
                     allsubjects.append(subject)
                     tasks = []
                     query = Task.all().filter('subject =', subject.key().id())
@@ -177,6 +193,7 @@ class TaskMail(Page):
                         subjects.append(subject)
                 person.last_notice_time = nowtime
                 person.put()
+                memcache.set('personid%s' % personid, person, 3600)
                 email_html = self.render_html('template/email/subject.html', {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects, 'allsubjects': allsubjects})
                 from google.appengine.api import mail
                 message = mail.EmailMessage(sender="猪八戒项目采集 <automail@weikezbj.appspotmail.com>",
@@ -189,10 +206,13 @@ class TaskMail(Page):
 class TaskSearch(Page):
     def get(self):
         url = 'http://search.zhubajie.com/t/s5t5.html?'
-        keywords = []
-        for subject in Subject.all():
-            parms = {'kw': subject.title.encode('utf-8'), 'j': subject.price}
-            keywords.append((urllib.urlencode(parms), subject.key().id(), subject.person))
+        keywords = memcache.get('allsubjectparm')
+        if not keywords:
+            keywords = []
+            for subject in Subject.all():
+                parms = {'kw': subject.title.encode('utf-8'), 'j': subject.price}
+                keywords.append((urllib.urlencode(parms), subject.key().id(), subject.person))
+            memcache.set('allsubjectparm', keywords, 3600)
         self.searchTask(url, keywords)
 
     def searchTask(self, url, keywords):
@@ -217,8 +237,13 @@ class TaskSearch(Page):
                 html = result.content
                 taskList = getOnePage(html)
                 for item in taskList:
-                    if item.get('href', ''):
-                        task = Task.get_by_key_name(item.get('href'))
+                    href = item.get('href', '').strip()
+                    if href:
+                        task = memcache.get(href)
+                        if not task:
+                            task = Task.get_by_key_name(href)
+                            if task:
+                                memcache.set(href, task, 3600)
                         if task and subjectid in task.subject:
                             continue
                         if not task:
@@ -235,6 +260,7 @@ class TaskSearch(Page):
                         task.participation = item.get('participation', '')
                         task.time_remaining = item.get('time_remaining', '')
                         task.put()
+                        memcache.set(href, task, 3600)
 
         except Exception, e:
             logging.error('0000' + str(e) + url)
