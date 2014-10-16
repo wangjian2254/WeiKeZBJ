@@ -159,11 +159,10 @@ class EmailHtml(Page):
                         subjects.append(subject)
             person.last_notice_time = nowtime
             person.put()
-            if not subjects:
-                continue
-            self.render('template/email/subject.html',
-                        {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects,
-                         'allsubjects': allsubjects})
+            if len(subjects) > 0:
+                self.render('template/email/subject.html',
+                            {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects,
+                             'allsubjects': allsubjects})
 
 
 class TaskMail(Page):
@@ -207,6 +206,8 @@ class TaskMail(Page):
                 person.last_notice_time = nowtime
                 person.put()
                 memcache.set('personid%s' % personid, person, 3600)
+                if not subjects:
+                    continue
                 email_html = self.render_html('template/email/subject.html',
                                               {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime,
                                                'subjects': subjects, 'allsubjects': allsubjects})
