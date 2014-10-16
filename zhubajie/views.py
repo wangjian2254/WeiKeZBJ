@@ -40,7 +40,7 @@ class Login(Page):
 
 class RegUser(Page):
     def get(self):
-        person = {'start_time': '08:00', 'end_time': '21:00', 'space': 5}
+        person = {'start_time': '08:00', 'end_time': '21:00', 'space': 15}
         self.render('template/reg.html', {'person': person})
 
     def post(self):
@@ -142,7 +142,8 @@ class EmailHtml(Page):
         for person in Person.all():
             subjects = []
             allsubjects = []
-            if person.last_notice_time and (person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
+            if person.last_notice_time and (
+                        person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
                 pass
             if person.email:
                 for subject in Subject.all().filter('person =', person.key().id()):
@@ -158,7 +159,10 @@ class EmailHtml(Page):
                         subjects.append(subject)
             person.last_notice_time = nowtime
             person.put()
-            self.render('template/email/subject.html', {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects, 'allsubjects': allsubjects})
+            self.render('template/email/subject.html',
+                        {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects,
+                         'allsubjects': allsubjects})
+
 
 class TaskMail(Page):
     def get(self):
@@ -173,7 +177,14 @@ class TaskMail(Page):
                 memcache.set('personid%s' % personid, person, 3600)
             subjects = []
             allsubjects = []
-            if person.last_notice_time and (person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
+            start_time = datetime.datetime(year=nowtime.year, month=nowtime.month,
+                                           day=nowtime.day) + datetime.timedelta(hours=person.start_time.hour,
+                                                                                 minutes=person.start_time.minute)
+            end_time = datetime.datetime(year=nowtime.year, month=nowtime.month, day=nowtime.day) + datetime.timedelta(
+                hours=person.end_time.hour, minutes=person.end_time.minute)
+            if person.last_notice_time and (
+                        person.last_notice_time + datetime.timedelta(
+                            minutes=person.space)) > nowtime and end_time > nowtime > start_time:
                 continue
             if person.email:
                 usersubjectlist = memcache.get('subjectlist%s' % personid)
@@ -194,10 +205,13 @@ class TaskMail(Page):
                 person.last_notice_time = nowtime
                 person.put()
                 memcache.set('personid%s' % personid, person, 3600)
-                email_html = self.render_html('template/email/subject.html', {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects, 'allsubjects': allsubjects})
+                email_html = self.render_html('template/email/subject.html',
+                                              {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime,
+                                               'subjects': subjects, 'allsubjects': allsubjects})
                 from google.appengine.api import mail
+
                 message = mail.EmailMessage(sender="猪八戒项目采集 <automail@weikezbj.appspotmail.com>",
-                            subject=u'%s 猪八戒项目采集' % nowtime.strftime('%Y-%m-%d'))
+                                            subject=u'%s 猪八戒项目采集' % nowtime.strftime('%Y-%m-%d'))
                 message.to = person.email
                 message.html = email_html
                 message.send()

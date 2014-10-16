@@ -5,6 +5,6 @@ cron:
 
 - description: task mail
   url: /taskmail
-  schedule: every 5 minutes
+  schedule: every 10 minutes
 
 
