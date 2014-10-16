@@ -3,4 +3,8 @@ cron:
   url: /tasksearch
   schedule: every 1 minutes
 
+- description: task mail
+  url: /taskmail
+  schedule: every 5 minutes
+
 

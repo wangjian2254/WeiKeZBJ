@@ -14,4 +14,9 @@ indexes:
   properties:
   - name: subject
   - name: create_time
+
+- kind: Task
+  properties:
+  - name: subject
+  - name: create_time
     direction: desc

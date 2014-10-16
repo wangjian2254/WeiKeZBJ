@@ -15,7 +15,8 @@
 # limitations under the License.
 #
 import webapp2
-from zhubajie.views import RegUser, Login, Logout, SubjectList, SubjectAdd, TaskList, SubjectDel, TaskSearch
+from zhubajie.views import RegUser, Login, Logout, SubjectList, SubjectAdd, TaskList, SubjectDel, TaskSearch, EmailHtml, \
+    TaskMail
 
 
 app = webapp2.WSGIApplication([
@@ -25,8 +26,11 @@ app = webapp2.WSGIApplication([
     ('/regUser', RegUser),
     # ('/top', Top),
     ('/tasklist', TaskList),
+    ('/taskmail', TaskMail),
     ('/tasksearch', TaskSearch),
     ('/subjectlist', SubjectList),
     ('/subjectadd', SubjectAdd),
     ('/deleteSubject', SubjectDel),
+    # test email html
+    ('/email', EmailHtml),
 ], debug=True)

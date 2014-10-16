@@ -42,7 +42,7 @@ def getOnePage(html):
         if cssClass and cssClass[0]=='list-task':
             tableRows=t.find_all('tr')
             for row in tableRows:
-                print '==================================='
+                # print '==================================='
                 taskItem={}
                 tags=row.find_all()
                 for i in tags:

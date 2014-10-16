@@ -131,21 +131,59 @@ class TaskList(Page):
         self.render('template/tasklist.html', {'tasklist': l, 'subject': subject})
 
 
+class EmailHtml(Page):
+    def get(self):
+        nowtime = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+        for person in Person.all():
+            subjects = []
+            allsubjects = []
+            if person.last_notice_time and (person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
+                pass
+            if person.email:
+                for subject in Subject.all().filter('person =', person.key().id()):
+                    allsubjects.append(subject)
+                    tasks = []
+                    query = Task.all().filter('subject =', subject.key().id())
+                    if False and person.last_notice_time:
+                        query = query.filter('create_time >=', person.last_notice_time)
+                    for task in query:
+                        tasks.append(task)
+                    if tasks:
+                        subject.tasks = tasks
+                        subjects.append(subject)
+            person.last_notice_time = nowtime
+            person.put()
+            self.render('template/email/subject.html', {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects, 'allsubjects': allsubjects})
+
 class TaskMail(Page):
     def get(self):
         nowtime = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
         for person in Person.all():
+            subjects = []
+            allsubjects = []
             if person.last_notice_time and (person.last_notice_time + datetime.timedelta(minutes=person.space)) > nowtime:
                 continue
             if person.email:
                 for subject in Subject.all().filter('person =', person.key().id()):
+                    allsubjects.append(subject)
+                    tasks = []
                     query = Task.all().filter('subject =', subject.key().id())
                     if person.last_notice_time:
                         query = query.filter('create_time >=', person.last_notice_time)
                     for task in query:
-                        pass
-            person.last_notice_time = nowtime
-            person.put()
+                        tasks.append(task)
+                    if tasks:
+                        subject.tasks = tasks
+                        subjects.append(subject)
+                person.last_notice_time = nowtime
+                person.put()
+                email_html = self.render_html('template/email/subject.html', {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects, 'allsubjects': allsubjects})
+                from google.appengine.api import mail
+                message = mail.EmailMessage(sender="猪八戒项目采集 <automail@weikezbj.appspotmail.com>",
+                            subject=u'%s 猪八戒项目采集' % nowtime.strftime('%Y-%m-%d'))
+                message.to = person.email
+                message.html = email_html
+                message.send()
 
 
 class TaskSearch(Page):
