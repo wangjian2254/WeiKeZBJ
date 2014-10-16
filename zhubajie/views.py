@@ -159,6 +159,8 @@ class EmailHtml(Page):
                         subjects.append(subject)
             person.last_notice_time = nowtime
             person.put()
+            if not subjects:
+                continue
             self.render('template/email/subject.html',
                         {'hosturl': 'http://zbj.zxxsbook.com', 'today': nowtime, 'subjects': subjects,
                          'allsubjects': allsubjects})
